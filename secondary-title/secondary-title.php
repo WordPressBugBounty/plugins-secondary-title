@@ -1,23 +1,28 @@
 <?php
 /**
- * (C) Copyright 2021 by Kolja Nolte
+ * (C) Copyright 2011-2025 by Kolja Nolte
  * kolja.nolte@gmail.com
  * https://www.kolja-nolte.com
  *
- * This program is free software; you can redistribute it and/or modify
+ * Secondary Title is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * the Free Software Foundation, either version 2 of the License, or
+ * any later version.
  *
- * @see    https://wordpress.org/plugins/secondary-title/
- * @author Kolja Nolte <kolja.nolte@gmail.com>
+ * Secondary Title is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * @package secondary-title
+ * @see     https://wordpress.org/plugins/secondary-title
  */
 
 /**
  * Plugin Name:   Secondary Title
- * Plugin URI:    https://www.kolja-nolte.com/wordpress/plugins/secondary-title/
- * Description:   Adds a secondary title to posts, pages and custom post types.
- * Version:       2.1.0
+ * Plugin URI:    https://docs.kolja-nolte.com/secondary-title
+ * Description:   Add a secondary title to posts, pages and custom post types.
+ * Version:       2.2.0
  * Author:        Kolja Nolte
  * Author URI:    https://www.kolja-nolte.com
  * License:       GPLv2 or later
@@ -28,31 +33,38 @@
 /**
  * Stop script when the file is called directly.
  */
-if ( ! function_exists( "add_action" ) ) {
-	die( "403 - You are not authorized to view this page." );
+if ( ! function_exists( 'add_action' ) ) {
+	die( '403 - You are not authorized to view this page.' );
 }
 
-define( "SECONDARY_TITLE_PATH", plugin_dir_path( __FILE__ ) );
-define( "SECONDARY_TITLE_URL", plugin_dir_url( __FILE__ ) );
+define( 'SECONDARY_TITLE_PATH', plugin_dir_path( __FILE__ ) );
+define( 'SECONDARY_TITLE_URL', plugin_dir_url( __FILE__ ) );
 
-const SECONDARY_TITLE_VERSION = "2.1.0";
+const SECONDARY_TITLE_DOCS_URL = 'https://docs.kolja-nolte.com/secondary-title';
+const SECONDARY_TITLE_VERSION  = '2.2.0';
 
+/** Autoload dependencies */
+require_once __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . '/vendor/autoload.php'; // example path
+/**
+ * Install default settings (if not set yet)
+ */
+register_activation_hook( __FILE__, 'secondary_title_install' );
 
-/** Install default settings (if not set yet) */
-register_activation_hook( __FILE__, "secondary_title_install" );
+/**
+ * Handles the donation notification display settings
+ */
+register_deactivation_hook( __FILE__, 'secondary_title_reset_donation_notice' );
 
-/** Handles the donation notification display settings */
-register_deactivation_hook( __FILE__, "secondary_title_reset_donation_notice" );
+/**
+ * Adds a link to the settings page on 'Plugins' section in the admin area
+ */
+add_action( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'secondary_title_add_settings_link' );
 
-/** Calls function which adds a link to the settings page on "Plugins" section in the admin area */
-add_action( "plugin_action_links_" . plugin_basename( __FILE__ ), "secondary_title_add_settings_link" );
+/** Find all .php files in the 'includes' directory */
+$include_files = glob( plugin_dir_path( __FILE__ ) . '/includes/*.php' );
 
-/** Find all .php files in the "includes" directory */
-$include_files = glob( plugin_dir_path( __FILE__ ) . "/includes/*.php" );
-
-/** Loop through all .php files in the "includes" directory */
+/** Loop through all .php files in the 'includes' directory */
 foreach ( $include_files as $include_file ) {
 	/** Skip file if file is not valid */
 	if ( ! is_file( $include_file ) || is_dir( $include_file ) ) {

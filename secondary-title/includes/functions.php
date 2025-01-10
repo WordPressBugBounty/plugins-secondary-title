@@ -1,22 +1,21 @@
 <?php
 /**
- * (C) Copyright 2021 by Kolja Nolte
+ * (C) Copyright 2011-2025 by Kolja Nolte
  * kolja.nolte@gmail.com
  * https://www.kolja-nolte.com
  *
- * This program is free software; you can redistribute it and/or modify
+ * Secondary Title is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * the Free Software Foundation, either version 2 of the License, or
+ * any later version.
  *
- * @see        https://wordpress.org/plugins/secondary-title/
- * @author     Kolja Nolte <kolja.nolte@gmail.com>
+ * Secondary Title is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * This file contains the main functions that can be used to return,
- * display or modify every information that is related to the plugin.
- *
- * @package    Secondary Title
- * @subpackage Global
+ * @package secondary-title
+ * @see     https://wordpress.org/plugins/secondary-title
  */
 
 /**
@@ -193,10 +192,10 @@ function get_secondary_title_post_categories(): array {
 /**
  * Get the secondary title from post ID $post_id
  *
- * @param int $post_id ID of target post.
- * @param string $prefix To be added in front of the secondary title.
- * @param string $suffix To be added after the secondary title.
- * @param bool $use_settings Use filters set on Secondary Title settings page.
+ * @param int    $post_id      ID of target post.
+ * @param string $prefix       To be added in front of the secondary title.
+ * @param string $suffix       To be added after the secondary title.
+ * @param bool   $use_settings Use filters set on Secondary Title settings page.
  *
  * @return string The secondary title
  *
@@ -244,14 +243,15 @@ function get_secondary_title( $post_id = 0, $prefix = "", $suffix = "", $use_set
 /**
  * Prints the secondary title and adds an optional suffix.
  *
- * @param int $post_id ID of target post.
- * @param string $prefix To be added in front of the secondary title.
- * @param string $suffix To be added after the secondary title.
- * @param bool $use_settings Use filters set on Secondary Title settings page.
+ * @param int    $post_id      ID of target post.
+ * @param string $prefix       To be added in front of the secondary title.
+ * @param string $suffix       To be added after the secondary title.
+ * @param bool   $use_settings Use filters set on Secondary Title settings page.
  *
  * @since 0.1.0
  *
  */
+
 
 use voku\helper\AntiXSS;
 
@@ -397,7 +397,7 @@ function secondary_title_update_settings( array $new_settings = [] ): bool {
 			if ( $setting_name === "post_ids" && ( ! $new_settings[ $setting_name ] || $value[0] === "" ) ) {
 				$value = [];
 			}
-		} elseif ( in_array( $setting_name, $arrays, true ) ) {
+		} else if ( in_array( $setting_name, $arrays, true ) ) {
 			$value = [];
 		}
 		if ( update_option( $full_setting_name, $value ) ) {
@@ -463,7 +463,11 @@ function secondary_title_verify_admin_page(): bool {
 	$allowed_categories = secondary_title_get_setting( "categories" );
 
 	/** Check if post is not among allowed post types */
-	if ( isset( $post->post_type ) && count( $allowed_post_types ) && ! in_array( $post->post_type, $allowed_post_types, false ) ) {
+	if ( isset( $post->post_type ) && count( $allowed_post_types ) && ! in_array(
+			$post->post_type,
+			$allowed_post_types,
+			false
+		) ) {
 		return false;
 	}
 
@@ -515,22 +519,46 @@ function secondary_title_reset_donation_notice(): bool {
 	return update_option( "secondary_title_show_donation_notice", "on" );
 }
 
-/**
- * Displays a Font Awesome info icon with a link
- * pointing to the relevant section in Secondary Title's
- * documentation on gitbooks.io.
- *
- * @param string $anchor
- *
- * @since 2.0.0
- */
-function secondary_title_print_html_info_circle( string $anchor ): void {
-	$info_url = "https://thaikolja.gitbooks.io/secondary-title/quick-start/settings.html";
+
+function secondary_title_documentation_icon( string $path, string $anchor = '', string $icon = '' ): void {
+	global $antiXss;
+
+	$icon              = $icon ? $icon : 'dashicons dashicons-editor-help';
+	$documentation_url = secondary_title_documentation_url( $path, $anchor );
+
+	if ( ! $path ) {
+		return;
+	}
+
+	$documentation_url = $antiXss->xss_clean( $documentation_url );
+	$url               = esc_url( $documentation_url );
 	?>
-    <a href="<?php echo $info_url . "#" . $anchor; ?>" target="_blank"
-       title="<?php _e( "Click here to learn more about this setting", "secondary-title" ); ?>"
-       class="info-circle right">
-        <i class="fa fa-info-circle"></i>
-    </a>
+    <div style="float:right;">
+        <a href="<?php echo $url; ?>" target="_blank">
+            <i class="<?php echo $icon; ?>" style="text-decoration: none"></i>
+        </a>
+    </div>
 	<?php
+}
+
+/**
+ * Returns the URL to the Secondary Title documentation.
+ *
+ * This function constructs a URL to the documentation page for the Secondary Title plugin.
+ * It takes a path and an optional anchor, sanitizes the anchor, and appends it to the base URL.
+ * If no anchor is provided, it appends '.html' to the URL.
+ *
+ * @param string $path   The path to the specific documentation section.
+ * @param string $anchor The anchor within the documentation page (optional).
+ *
+ * @return string The full URL to the documentation page.
+ *
+ * @since 2.2.0
+ * @since 2.2.0
+ */
+function secondary_title_documentation_url( string $path, string $anchor = '' ): string {
+	$anchor            = sanitize_title_with_dashes( $anchor );
+	$documentation_url = 'https://docs.kolja-nolte.com/secondary-title/' . $path . '.html#' . $anchor;
+
+	return $documentation_url;
 }

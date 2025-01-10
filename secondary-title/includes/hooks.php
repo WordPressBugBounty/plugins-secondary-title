@@ -1,23 +1,21 @@
 <?php
 /**
- * (C) Copyright 2021 by Kolja Nolte
+ * (C) Copyright 2011-2025 by Kolja Nolte
  * kolja.nolte@gmail.com
  * https://www.kolja-nolte.com
  *
- * This program is free software; you can redistribute it and/or modify
+ * Secondary Title is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * the Free Software Foundation, either version 2 of the License, or
+ * any later version.
  *
- * @see        https://wordpress.org/plugins/secondary-title/
- * @author     Kolja Nolte <kolja.nolte@gmail.com>
+ * Secondary Title is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * This file contains the hooks used for Secondary Title.
- * Hooks are functions that modify WordPress core functions
- * and thus allow to change their output.
- *
- * @package    Secondary Title
- * @subpackage Global
+ * @package secondary-title
+ * @see     https://wordpress.org/plugins/secondary-title
  */
 
 /**
@@ -45,8 +43,12 @@ function secondary_title_gutenberg_meta_box_content( $post ) {
 	$title           = __( "Enter secondary title here", "secondary-title" );
 	$placeholder     = $title . "...";
 	?>
-    <input type="text" value="<?php echo $secondary_title; ?>" id="secondary-title"
-           class="components-text-control__input" name="secondary_post_title" title="<?php echo $title; ?>"
+    <input type="text"
+           value="<?php echo $secondary_title; ?>"
+           id="secondary-title"
+           class="components-text-control__input"
+           name="secondary_post_title"
+           title="<?php echo $title; ?>"
            placeholder="<?php echo $placeholder; ?>"/>
 	<?php
 }
@@ -114,7 +116,7 @@ function secondary_title_edit_post( $post_id ) {
 		if ( ! current_user_can( "edit_page", $post_id ) ) {
 			return false;
 		}
-	} elseif ( ! current_user_can( "edit_post", $post_id ) ) {
+	} else if ( ! current_user_can( "edit_post", $post_id ) ) {
 		return false;
 	}
 
@@ -231,7 +233,9 @@ function secondary_title_auto_show( string $title ): string {
 	);
 
 	/** Validate secondary title */
-	if ( ! $secondary_title || get_option( "secondary_title_auto_show" ) === "off" || $title !== wptexturize( $post->post_title ) ) {
+	if ( ! $secondary_title || get_option( "secondary_title_auto_show" ) === "off" || $title !== wptexturize(
+			$post->post_title
+		) ) {
 		return $standard_title;
 	}
 
@@ -285,7 +289,6 @@ function secondary_title_scripts_and_styles() {
 	}
 
 	/** Scripts */
-
 	wp_enqueue_script(
 		"secondary-title-scripts-admin",
 		"{$plugin_folder}scripts/js/admin.min.js",
@@ -294,7 +297,6 @@ function secondary_title_scripts_and_styles() {
 	);
 
 	/** Styles */
-
 	wp_enqueue_style(
 		"secondary-title-styles-admin",
 		"{$plugin_folder}styles/css/admin.min.css",
@@ -560,7 +562,10 @@ function secondary_title_donation_notice(): void {
 	}
 
 	$disable_notice_url = wp_nonce_url(
-		get_admin_url( get_current_blog_id(), "options-general.php?page=secondary-title&secondary_title_notice=off" ),
+		get_admin_url(
+			get_current_blog_id(),
+			"options-general.php?page=secondary-title&secondary_title_notice=off"
+		),
 		"secondary_title_nonce_disable_donation_notice",
 		"nonce"
 	);
@@ -586,10 +591,12 @@ function secondary_title_donation_notice(): void {
 			?>
         </p>
         <div class="action-buttons">
-            <a href="https://www.paypal.me/thaikolja/10/" target="_blank" class="button button-primary link-button"
+            <a href="https://www.paypal.me/thaikolja/10/"
+               target="_blank"
+               class="button button-primary link-button"
                style="margin-right:10px;">
                 <i class="fab fa-paypal" style="margin-right:5px;"></i>
-				<?php _e( "Keep Secondary Title alive by Donating via PayPal", "secondary-title" ); ?>
+				<?php _e( "Help keeping Secondary Title alive with a small donation", "secondary-title" ); ?>
             </a>
             <a href="<?php echo $disable_notice_url; ?>" class="button button-secondary dismiss-button">
                 <i class="fa fa-times"></i>
@@ -628,7 +635,10 @@ function secondary_title_deactivate_donation_notice(): void {
 	}
 
 	/** Don't do anything if parameters are given but the nonce couldn't be verified */
-	if ( isset( $_GET["nonce"] ) && ! wp_verify_nonce( $_GET["nonce"], "secondary_title_nonce_disable_donation_notice" ) ) {
+	if ( isset( $_GET["nonce"] ) && ! wp_verify_nonce(
+			$_GET["nonce"],
+			"secondary_title_nonce_disable_donation_notice"
+		) ) {
 		return;
 	}
 
