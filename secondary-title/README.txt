@@ -2,9 +2,9 @@
 
 Contributors:        thaikolja
 Donate link:         https://www.paypal.me/thaikolja/10
-Tags:                title, secondary title, subheading, heading, title
-Tested up to:        6.7.1
-Stable tag:          2.2.0
+Tags:                title, second title, subheading, heading
+Tested up to:        7.1
+Stable tag:          2.2.1
 Requires at least:   4.0
 Requires PHP:        7.4
 License:             GPLv2 or later
@@ -68,6 +68,11 @@ The full FAQ can be found in the [documentation](https://docs.kolja-nolte.com/se
 5. Learn how Secondary Title works and use it for your theme or plugin by reading the [official documentation](https://docs.kolja-nolte.com/secondary-title/).
 
 == Changelog ==
+
+= 2.2.1 =
+* Fixed PHP `v8.4` deprecation notices ("Implicitly marking parameter ... as nullable is deprecated") caused by the bundled `voku/portable-utf8` dependency
+* Updated `voku/anti-xss` and `voku/portable-utf8` to versions that are fully compatible with PHP `v8.4` and `v8.5`
+* No database changes; all settings and secondary titles are preserved
 
 = 2.2.0 =
 * Added support for WordPress `v6.7.1`

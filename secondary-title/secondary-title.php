@@ -22,7 +22,7 @@
  * Plugin Name:   Secondary Title
  * Plugin URI:    https://docs.kolja-nolte.com/secondary-title
  * Description:   Add a secondary title to posts, pages and custom post types.
- * Version:       2.2.0
+ * Version:       2.2.1
  * Author:        Kolja Nolte
  * Author URI:    https://www.kolja-nolte.com
  * License:       GPLv2 or later
